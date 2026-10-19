@@ -5,12 +5,14 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from graphify.paths import out_path as _out_path
+
 
 VIDEO_EXTENSIONS = {'.mp4', '.mov', '.webm', '.mkv', '.avi', '.m4v', '.mp3', '.wav', '.m4a', '.ogg'}
 URL_PREFIXES = ('http://', 'https://', 'www.')
 
 _DEFAULT_MODEL = "base"
-_TRANSCRIPTS_DIR = "graphify-out/transcripts"
+_TRANSCRIPTS_DIR = str(_out_path("transcripts"))
 _FALLBACK_PROMPT = "Use proper punctuation and paragraph breaks."
 
 
@@ -58,7 +60,7 @@ def download_audio(url: str, output_dir: Path) -> Path:
 
     # yt-dlp uses %(title)s which can be long/weird — use a stable name based on URL hash
     import hashlib
-    url_hash = hashlib.sha1(url.encode()).hexdigest()[:12]
+    url_hash = hashlib.sha1(url.encode(), usedforsecurity=False).hexdigest()[:12]
     out_template = str(output_dir / f"yt_{url_hash}.%(ext)s")
 
     # Check for already-downloaded file
